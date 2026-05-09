@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 600px; height: 400px; overflow: hidden; }
+  .cover { width: 600px; height: 400px; position: relative; overflow: hidden; }
+  .cover-tetris {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0d0d0d 100%);
+  }
+  .tetris-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 28px 28px; }
+
+  .block {
+    position: absolute; width: 28px; height: 28px;
+    border-radius: 3px; box-shadow: 0 0 12px currentColor;
+  }
+  .block-cyan { background: #00d4ff; color: #00d4ff; }
+  .block-yellow { background: #ffdd00; color: #ffdd00; }
+  .block-purple { background: #b44cff; color: #b44cff; }
+  .block-green { background: #00e676; color: #00e676; }
+  .block-red { background: #ff0055; color: #ff0055; }
+  .block-blue { background: #448aff; color: #448aff; }
+  .block-orange { background: #ff9100; color: #ff9100; }
+
+  .particle {
+    position: absolute; width: 6px; height: 6px;
+    background: #00d4ff; border-radius: 1px;
+    box-shadow: 0 0 8px rgba(0,212,255,0.8);
+    opacity: 0.6;
+  }
+</style>
+</head>
+<body>
+<div class="cover cover-tetris">
+  <div class="tetris-grid"></div>
+  <!-- T 块 紫色 -->
+  <div class="block block-purple" style="top:28px;left:420px"></div>
+  <div class="block block-purple" style="top:56px;left:392px"></div>
+  <div class="block block-purple" style="top:56px;left:420px"></div>
+  <div class="block block-purple" style="top:56px;left:448px"></div>
+  <!-- I 块 青色 -->
+  <div class="block block-cyan" style="top:84px;left:280px"></div>
+  <div class="block block-cyan" style="top:112px;left:280px"></div>
+  <div class="block block-cyan" style="top:140px;left:280px"></div>
+  <div class="block block-cyan" style="top:168px;left:280px"></div>
+  <!-- 下落中 -->
+  <div class="block block-red" style="top:28px;left:504px"></div>
+  <div class="block block-red" style="top:56px;left:504px"></div>
+  <div class="block block-green" style="top:140px;left:476px"></div>
+  <div class="block block-green" style="top:168px;left:476px"></div>
+  <!-- 堆积底部 -->
+  <div class="block block-red" style="top:336px;left:56px"></div><div class="block block-red" style="top:336px;left:84px"></div><div class="block block-red" style="top:364px;left:56px"></div><div class="block block-red" style="top:364px;left:84px"></div>
+  <div class="block block-blue" style="top:336px;left:168px"></div><div class="block block-blue" style="top:364px;left:168px"></div><div class="block block-blue" style="top:364px;left:196px"></div><div class="block block-blue" style="top:364px;left:224px"></div>
+  <div class="block block-orange" style="top:336px;left:308px"></div><div class="block block-orange" style="top:336px;left:336px"></div><div class="block block-orange" style="top:364px;left:336px"></div>
+  <div class="block block-green" style="top:336px;left:420px"></div><div class="block block-green" style="top:336px;left:448px"></div><div class="block block-green" style="top:336px;left:476px"></div>
+  <div class="block block-yellow" style="top:336px;left:532px"></div><div class="block block-yellow" style="top:364px;left:504px"></div><div class="block block-yellow" style="top:364px;left:532px"></div>
+  <!-- 粒效 -->
+  <div class="particle" style="top:200px;left:300px"></div>
+  <div class="particle" style="top:220px;left:320px;opacity:0.3"></div>
+  <div class="particle" style="top:180px;left:480px;background:#ffdd00;opacity:0.4"></div>
+</div>
+</body>
+</html>

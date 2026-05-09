@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>俄罗斯方块 - GGb Game</title>
+    <link rel="stylesheet" href="tetris.css">
+</head>
+<body>
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <div class="splash-tetris-icon">
+                    <span style="color:#00d4ff">■</span><span style="color:#ffdd00">■</span>
+                    <br>
+                    <span style="color:#b44cff">■</span><span style="color:#00e676">■</span>
+                </div>
+                <div class="splash-ripple"></div>
+            </div>
+            <h1 class="splash-title">
+                <span class="splash-title-char" style="animation-delay:0s">俄</span>
+                <span class="splash-title-char" style="animation-delay:0.12s">罗</span>
+                <span class="splash-title-char" style="animation-delay:0.24s">斯</span>
+                <span class="splash-title-char" style="animation-delay:0.36s">方</span>
+                <span class="splash-title-char" style="animation-delay:0.48s">块</span>
+            </h1>
+            <div class="splash-loader">
+                <div class="splash-loader-bar"></div>
+            </div>
+            <p class="splash-subtitle">加载中...</p>
+        </div>
+    </div>
+
+    <div id="gameContainer" class="tetris-layout" style="display: none;">
+        <div class="tetris-main">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+        <div class="tetris-sidebar">
+            <div class="side-panel">
+                <h3>下一个</h3>
+                <canvas id="nextCanvas"></canvas>
+            </div>
+            <div class="side-panel">
+                <div class="stat-row">
+                    <span class="stat-label">分数</span>
+                    <span class="stat-value" id="scoreDisplay">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">等级</span>
+                    <span class="stat-value" id="levelDisplay">1</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">行数</span>
+                    <span class="stat-value" id="linesDisplay">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">最高分</span>
+                    <span class="stat-value" id="highScoreDisplay">0</span>
+                </div>
+            </div>
+            <div class="side-panel controls-panel">
+                <div class="control-hint">↑ 旋转</div>
+                <div class="control-hint">← → 移动</div>
+                <div class="control-hint">↓ 加速</div>
+                <div class="control-hint">空格 落底</div>
+                <div class="control-hint">P 暂停</div>
+            </div>
+            <button id="btnBack" class="btn btn-ghost">🏠 返回大厅</button>
+        </div>
+    </div>
+
+    <div id="gameOverOverlay" class="overlay" style="display: none;">
+        <div class="overlay-card">
+            <h2 class="overlay-title">游戏结束</h2>
+            <div class="overlay-score">
+                <span class="overlay-score-label">最终得分</span>
+                <span class="overlay-score-value" id="finalScoreDisplay">0</span>
+            </div>
+            <div class="overlay-badge" id="overlayBadge" style="display: none;">🏆 新纪录！</div>
+            <div class="overlay-buttons">
+                <button id="btnRestart" class="btn btn-primary">再来一局</button>
+                <button id="btnBackOverlay" class="btn btn-ghost">🏠 返回大厅</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="utils/storage.js"></script>
+    <script src="utils/api.js"></script>
+    <script src="tetris.js"></script>
+</body>
+</html>

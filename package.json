@@ -1,0 +1,46 @@
+{
+  "name": "GGb Game",
+  "version": "1.0.0",
+  "description": "一个有趣的大鱼吃小鱼游戏",
+  "main": "server.js",
+  "bin": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test-e2e.js",
+    "test:watch": "node watch-test.js",
+    "build": "pkg . --targets node18-win-x64 --output game.exe"
+  },
+  "keywords": [
+    "game",
+    "大鱼吃小鱼"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^16.4.7",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.4.1",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.12.0",
+    "playwright": "^1.59.1"
+  },
+  "pkg": {
+    "assets": [
+      "public/index.html",
+      "public/game.js",
+      "public/style.css",
+      "public/ggb.jpg",
+      "public/chaorq.jpg",
+      "public/ff.jpg",
+      "public/bobi.jpg",
+      "public/daibi.webp",
+      "public/admin.html",
+      "public/admin.css"
+    ]
+  }
+}

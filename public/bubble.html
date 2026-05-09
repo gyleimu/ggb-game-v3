@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>泡泡龙 - GGb Game</title>
+    <link rel="stylesheet" href="bubble.css">
+</head>
+<body>
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <div class="splash-bubble-icon">
+                    <span style="color:#ff6b6b">●</span><span style="color:#ffd93d">●</span><span style="color:#6bcb77">●</span>
+                </div>
+                <div class="splash-ripple"></div>
+            </div>
+            <h1 class="splash-title">
+                <span class="splash-title-char" style="animation-delay:0s">泡</span>
+                <span class="splash-title-char" style="animation-delay:0.12s">泡</span>
+                <span class="splash-title-char" style="animation-delay:0.24s">龙</span>
+            </h1>
+            <div class="splash-loader">
+                <div class="splash-loader-bar"></div>
+            </div>
+            <p class="splash-subtitle">加载中...</p>
+        </div>
+    </div>
+
+    <div id="gameContainer" class="bubble-container" style="display: none;">
+        <div class="bubble-hud">
+            <span class="hud-item">🏆 <span id="scoreDisplay">0</span></span>
+            <span class="hud-item">⭐ <span id="highScoreDisplay">0</span></span>
+        </div>
+        <div class="bubble-main">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+        <div class="bubble-sidebar">
+            <div class="side-panel">
+                <h3>下一个</h3>
+                <canvas id="nextCanvas"></canvas>
+            </div>
+            <div class="side-panel controls-panel">
+                <div class="control-hint">🖱 移动瞄准</div>
+                <div class="control-hint">🖱 点击发射</div>
+                <div class="control-hint">P 暂停</div>
+            </div>
+            <button id="btnBack" class="btn btn-ghost">🏠 返回大厅</button>
+        </div>
+    </div>
+
+    <div id="gameOverOverlay" class="overlay" style="display: none;">
+        <div class="overlay-card">
+            <h2 class="overlay-title">游戏结束</h2>
+            <div class="overlay-score">
+                <span class="overlay-score-label">最终得分</span>
+                <span class="overlay-score-value" id="finalScoreDisplay">0</span>
+            </div>
+            <div class="overlay-badge" id="overlayBadge" style="display: none;">🏆 新纪录！</div>
+            <div class="overlay-buttons">
+                <button id="btnRestart" class="btn btn-primary">再来一局</button>
+                <button id="btnBackOverlay" class="btn btn-ghost">🏠 返回大厅</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="utils/storage.js"></script>
+    <script src="utils/api.js"></script>
+    <script src="bubble.js"></script>
+</body>
+</html>

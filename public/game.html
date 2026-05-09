@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大球吃小球 - GGb Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 启动动画 -->
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <div class="splash-fish">
+                    <img src="ggb.jpg" alt="ggb">
+                </div>
+                <div class="splash-ripple"></div>
+            </div>
+            <h1 class="splash-title">
+                <span class="splash-title-char" style="animation-delay:0s">大</span>
+                <span class="splash-title-char" style="animation-delay:0.12s">球</span>
+                <span class="splash-title-char" style="animation-delay:0.24s">吃</span>
+                <span class="splash-title-char" style="animation-delay:0.36s">小</span>
+                <span class="splash-title-char" style="animation-delay:0.48s">球</span>
+            </h1>
+            <div class="splash-loader">
+                <div class="splash-loader-bar"></div>
+            </div>
+            <p class="splash-subtitle">加载中...</p>
+        </div>
+    </div>
+
+
+    <!-- 角色选择 + 游戏 -->
+    <div id="startScreen" class="start-screen" style="display: none;">
+        <h1>大球吃小球</h1>
+        <div id="welcomeUser" class="welcome-user"></div>
+        <div class="character-selection">
+            <h3>选择你的角色</h3>
+            <div class="character-options">
+                <div class="character-option" data-color="#ff6b6b" data-image="ggb.jpg">
+                    <img src="ggb.jpg" alt="ggb">
+                </div>
+                <div class="character-option" data-color="#45b7d1" data-image="chaorq.jpg">
+                    <img src="chaorq.jpg" alt="chaorq">
+                </div>
+                <div class="character-option" data-color="#ff69b4" data-image="ff.jpg">
+                    <img src="ff.jpg" alt="ff">
+                </div>
+                <div class="character-option" data-color="#96ceb4" data-image="bobi.jpg">
+                    <img src="bobi.jpg" alt="bobi">
+                </div>
+                <div class="character-option" data-color="#ff6f69" data-image="daibi.webp">
+                    <img src="daibi.webp" alt="daibi">
+                </div>
+            </div>
+        </div>
+        <button onclick="startGame()">开始游戏</button>
+        <button onclick="goToLobby()" class="lobby-btn">🏠 返回大厅</button>
+        <button onclick="logout()" class="logout-btn">退出登录</button>
+        <button onclick="toggleMute()" class="mute-btn">🔊 声音</button>
+    </div>
+    
+    <!-- 游戏界面 -->
+    <div id="gameScreen" class="game-container" style="display: none;">
+        <h1>大球吃小球</h1>
+        <canvas id="gameCanvas" width="1920" height="1080"></canvas>
+        <div class="game-info">
+            <div class="score">分数: <span id="score">0</span></div>
+            <div class="level">等级: <span id="level">1</span></div>
+        </div>
+        <div class="game-controls">
+            <p>使用方向键控制移动</p>
+            <p>空格键返回主菜单</p>
+        </div>
+        <div id="gameOver" class="game-over">
+            <h2>游戏结束</h2>
+            <p>最终分数: <span id="finalScore">0</span></p>
+            <button onclick="backToMenu()">返回主菜单</button>
+        </div>
+    </div>
+    <script src="utils/storage.js"></script>
+    <script src="utils/api.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

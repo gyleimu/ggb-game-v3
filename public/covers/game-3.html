@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 600px; height: 400px; overflow: hidden; }
+  .cover { width: 600px; height: 400px; position: relative; overflow: hidden; }
+  .cover-snake {
+    background: linear-gradient(135deg, #0a0020 0%, #1a0033 50%, #0d001a 100%);
+  }
+  .grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(57,255,20,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(57,255,20,0.05) 1px, transparent 1px); background-size: 30px 30px; }
+
+  .snake-seg {
+    position: absolute; width: 26px; height: 26px; border-radius: 8px;
+    background: radial-gradient(circle at 30% 30%, #76ff03, #00c853);
+    box-shadow: 0 0 18px rgba(57,255,20,0.5);
+  }
+  .snake-head {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: radial-gradient(circle at 40% 40%, #b2ff59, #00e676);
+    box-shadow: 0 0 30px rgba(57,255,20,0.8);
+  }
+  .food {
+    position: absolute; width: 22px; height: 22px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, #ff5252, #d50000);
+    box-shadow: 0 0 25px rgba(255,82,82,0.7);
+  }
+
+  /* 蛇身曲线 */
+  .snake-seg:nth-child(1) { top:100px; left:340px; }
+  .snake-seg:nth-child(2) { top:100px; left:312px; }
+  .snake-seg:nth-child(3) { top:100px; left:284px; }
+  .snake-seg:nth-child(4) { top:100px; left:256px; }
+  .snake-seg:nth-child(5) { top:100px; left:228px; }
+  .snake-seg:nth-child(6) { top:126px; left:204px; }
+  .snake-seg:nth-child(7) { top:152px; left:180px; }
+  .snake-seg:nth-child(8) { top:152px; left:152px; }
+  .snake-seg:nth-child(9) { top:152px; left:124px; }
+</style>
+</head>
+<body>
+<div class="cover cover-snake">
+  <div class="grid"></div>
+  <div class="snake-head snake-head" style="position:absolute; top:92px; left:356px; width:34px; height:34px; border-radius:10px; background:radial-gradient(circle at 40% 40%,#b2ff59,#00e676); box-shadow:0 0 30px rgba(57,255,20,0.8);"></div>
+  <div class="snake-seg" style="top:100px; left:328px"></div>
+  <div class="snake-seg" style="top:100px; left:300px"></div>
+  <div class="snake-seg" style="top:100px; left:272px"></div>
+  <div class="snake-seg" style="top:100px; left:244px"></div>
+  <div class="snake-seg" style="top:100px; left:216px"></div>
+  <div class="snake-seg" style="top:126px; left:194px"></div>
+  <div class="snake-seg" style="top:152px; left:172px"></div>
+  <div class="snake-seg" style="top:152px; left:144px"></div>
+  <div class="snake-seg" style="top:152px; left:116px"></div>
+  <div class="snake-seg" style="top:178px; left:100px"></div>
+  <div class="food" style="top:80px; left:84px"></div>
+  <div class="food" style="top:240px; left:400px; width:16px; height:16px; opacity:0.5"></div>
+  <div class="food" style="top:290px; left:460px; width:16px; height:16px; opacity:0.5"></div>
+  <div class="food" style="top:180px; left:450px; width:16px; height:16px; opacity:0.5"></div>
+</div>
+</body>
+</html>

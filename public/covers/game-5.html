@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 600px; height: 400px; overflow: hidden; }
+  .cover { width: 600px; height: 400px; position: relative; overflow: hidden; }
+  .cover-bubble {
+    background: linear-gradient(180deg, #e8f5e9 0%, #c8e6c9 30%, #fff9c4 70%, #fff3e0 100%);
+  }
+  .bubble-game {
+    position: absolute; border-radius: 50%;
+    box-shadow: inset -5px -5px 10px rgba(0,0,0,0.08), inset 3px 3px 8px rgba(255,255,255,0.7);
+  }
+  .bg1 { width: 56px; height: 56px; top: 50px; left: 70px; background: radial-gradient(circle at 35% 35%, #ff80ab, #f50057); }
+  .bg2 { width: 50px; height: 50px; top: 30px; left: 150px; background: radial-gradient(circle at 35% 35%, #80d8ff, #00b0ff); }
+  .bg3 { width: 54px; height: 54px; top: 60px; left: 230px; background: radial-gradient(circle at 35% 35%, #ffe57f, #ffd600); }
+  .bg4 { width: 48px; height: 48px; top: 25px; left: 310px; background: radial-gradient(circle at 35% 35%, #b2ff59, #64dd17); }
+  .bg5 { width: 52px; height: 52px; top: 50px; left: 390px; background: radial-gradient(circle at 35% 35%, #ea80fc, #d500f9); }
+  .bg6 { width: 58px; height: 58px; top: 15px; left: 460px; background: radial-gradient(circle at 35% 35%, #ff8a80, #ff1744); }
+  .bg7 { width: 44px; height: 44px; top: 110px; left: 100px; background: radial-gradient(circle at 35% 35%, #84ffff, #00e5ff); }
+  .bg8 { width: 50px; height: 50px; top: 105px; left: 300px; background: radial-gradient(circle at 35% 35%, #ffd740, #ff9100); }
+
+  .shooter {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px;
+  }
+  .shooter-base {
+    width: 0; height: 0;
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-top: 70px solid #5d4037;
+    margin: 0 auto;
+  }
+  .shooter-ball {
+    position: absolute; top: -15px; left: 16px;
+    width: 48px; height: 48px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ea80fc, #9c27b0);
+    box-shadow: 0 0 25px rgba(234,128,252,0.6);
+  }
+</style>
+</head>
+<body>
+<div class="cover cover-bubble">
+  <div class="bubble-game bg1"></div>
+  <div class="bubble-game bg2"></div>
+  <div class="bubble-game bg3"></div>
+  <div class="bubble-game bg4"></div>
+  <div class="bubble-game bg5"></div>
+  <div class="bubble-game bg6"></div>
+  <div class="bubble-game bg7"></div>
+  <div class="bubble-game bg8"></div>
+  <div class="bubble-game" style="width:42px;height:42px;top:140px;left:170px;background:radial-gradient(circle at 35% 35%,#ff5252,#c62828);"></div>
+  <div class="bubble-game" style="width:48px;height:48px;top:150px;left:420px;background:radial-gradient(circle at 35% 35%,#69f0ae,#00c853);"></div>
+  <div class="bubble-game" style="width:40px;height:40px;top:90px;left:260px;background:radial-gradient(circle at 35% 35%,#ffe57f,#ffab00);"></div>
+  <div class="bubble-game" style="width:50px;height:50px;top:140px;left:490px;background:radial-gradient(circle at 35% 35%,#40c4ff,#0091ea);"></div>
+  <div class="bubble-game" style="width:36px;height:36px;top:180px;left:350px;background:radial-gradient(circle at 35% 35%,#ff80ab,#c51162);"></div>
+  <div class="bubble-game" style="width:44px;height:44px;top:80px;left:500px;background:radial-gradient(circle at 35% 35%,#ffd740,#ff6d00);"></div>
+  <div class="shooter">
+    <div class="shooter-base"></div>
+    <div class="shooter-ball"></div>
+  </div>
+</div>
+</body>
+</html>

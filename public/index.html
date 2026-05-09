@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GGb Game — 游戏大厅</title>
+    <link rel="stylesheet" href="lobby.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="nav-bar">
+        <div class="nav-left">
+            <span class="nav-logo">🎮 GGb Game</span>
+        </div>
+        <div class="nav-right" id="navAuthLinks">
+            <a href="#" class="nav-link" onclick="showLogin()">登录</a>
+            <a href="#" class="nav-link" onclick="showRegister()">注册</a>
+        </div>
+        <div class="nav-right" id="navUserInfo" style="display:none">
+            <a href="#" class="nav-link" onclick="openProfile()">👤 个人中心</a>
+            <a href="/leaderboard" class="nav-link">🏆 排行榜</a>
+            <span class="nav-user" id="navUsername"></span>
+            <a href="#" class="nav-link nav-logout" onclick="handleLogout()">退出</a>
+        </div>
+    </nav>
+
+    <!-- 登录遮罩 -->
+    <div class="auth-overlay hidden" id="authOverlay">
+        <div class="auth-modal">
+            <div id="loginForm">
+                <h2>欢迎回来</h2>
+                <input type="text" id="loginUsername" placeholder="用户名" autocomplete="username">
+                <input type="password" id="loginPassword" placeholder="密码" autocomplete="current-password">
+                <button onclick="handleLogin()">登 录</button>
+                <p class="auth-switch">还没有账号？<a href="#" onclick="showRegister()">立即注册</a></p>
+                <p id="loginMessage" class="message"></p>
+            </div>
+            <div id="registerForm" style="display:none">
+                <h2>创建账号</h2>
+                <input type="text" id="registerUsername" placeholder="用户名">
+                <input type="email" id="registerEmail" placeholder="邮箱">
+                <input type="password" id="registerPassword" placeholder="密码（至少8位，含字母+数字）">
+                <input type="password" id="registerConfirmPassword" placeholder="确认密码">
+                <button onclick="handleRegister()">注 册</button>
+                <p class="auth-switch">已有账号？<a href="#" onclick="showLogin()">立即登录</a></p>
+                <p id="registerMessage" class="message"></p>
+            </div>
+            <button class="auth-close" onclick="closeAuth()">✕</button>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <section class="hero">
+            <h1 class="hero-title">🎮 游戏大厅</h1>
+            <p class="hero-subtitle">选择一个游戏，开始你的冒险之旅</p>
+        </section>
+
+        <section class="games-grid" id="gamesGrid">
+            <div class="loading-cards">
+                <div class="card-skeleton"></div>
+                <div class="card-skeleton"></div>
+                <div class="card-skeleton"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 排行榜弹窗 -->
+    <div class="modal-overlay" id="leaderboardModal" style="display:none">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🏆 排行榜</h2>
+                <button class="modal-close" onclick="closeModal('leaderboardModal')">✕</button>
+            </div>
+            <div class="modal-body" id="leaderboardBody">
+                <p class="loading-text">加载中...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 个人中心弹窗 -->
+    <div class="modal-overlay" id="profileModal" style="display:none">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👤 个人中心</h2>
+                <button class="modal-close" onclick="closeModal('profileModal')">✕</button>
+            </div>
+            <div class="modal-body" id="profileBody">
+                <p class="loading-text">加载中...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="utils/storage.js"></script>
+    <script src="utils/api.js"></script>
+    <script src="lobby.js"></script>
+</body>
+</html>

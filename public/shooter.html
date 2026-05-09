@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>太空射击 - GGb Game</title>
+    <link rel="stylesheet" href="shooter.css">
+</head>
+<body>
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <div class="splash-ship">🚀</div>
+                <div class="splash-ripple"></div>
+            </div>
+            <h1 class="splash-title">
+                <span class="splash-title-char" style="animation-delay:0s">太</span>
+                <span class="splash-title-char" style="animation-delay:0.12s">空</span>
+                <span class="splash-title-char" style="animation-delay:0.24s">射</span>
+                <span class="splash-title-char" style="animation-delay:0.36s">击</span>
+            </h1>
+            <div class="splash-loader">
+                <div class="splash-loader-bar"></div>
+            </div>
+            <p class="splash-subtitle">加载中...</p>
+        </div>
+    </div>
+
+    <div id="gameContainer" class="shooter-container" style="display: none;">
+        <canvas id="gameCanvas"></canvas>
+        <div class="shooter-hud" id="hud">
+            <span class="hud-score">🏆 <span id="scoreDisplay">0</span></span>
+            <span class="hud-high">⭐ <span id="highScoreDisplay">0</span></span>
+        </div>
+        <div class="shooter-controls-hint" id="hint">
+            <span>← → 或 AD 移动</span>
+            <span class="divider">|</span>
+            <span>空格 发射</span>
+            <span class="divider">|</span>
+            <span>P 暂停</span>
+        </div>
+    </div>
+
+    <div id="gameOverOverlay" class="overlay" style="display: none;">
+        <div class="overlay-card">
+            <h2 class="overlay-title">💥 游戏结束</h2>
+            <div class="overlay-score">
+                <span class="overlay-score-label">最终得分</span>
+                <span class="overlay-score-value" id="finalScoreDisplay">0</span>
+            </div>
+            <div class="overlay-badge" id="overlayBadge" style="display: none;">🏆 新纪录！</div>
+            <div class="overlay-buttons">
+                <button id="btnRestart" class="btn btn-primary">再来一局</button>
+                <button id="btnBackOverlay" class="btn btn-ghost">🏠 返回大厅</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="utils/storage.js"></script>
+    <script src="utils/api.js"></script>
+    <script src="shooter.js"></script>
+</body>
+</html>

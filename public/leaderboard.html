@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>排行榜 - GGb Game</title>
+    <link rel="stylesheet" href="leaderboard.css">
+</head>
+<body>
+    <div class="lb-container">
+        <div class="lb-header">
+            <div class="lb-header-left">
+                <div class="lb-header-icon">🏆</div>
+                <div>
+                    <h1>排行榜</h1>
+                    <div class="lb-header-sub">实时更新 · 展示 Top 10</div>
+                </div>
+            </div>
+            <a href="/" class="lb-back">
+                <span>←</span>
+                <span>返回大厅</span>
+            </a>
+        </div>
+
+        <div class="lb-stats" id="lbStats"></div>
+
+        <div class="lb-tabs-wrapper">
+            <div class="lb-tabs" id="lbTabs">
+                <button class="lb-tab active" data-game="global">
+                    <span class="lb-tab-icon">🌐</span>
+                    <span>全平台总榜</span>
+                </button>
+                <button class="lb-tab" data-game="6">
+                    <span class="lb-tab-icon">🎮</span>
+                    <span>大球吃小球</span>
+                </button>
+                <button class="lb-tab" data-game="7">
+                    <span class="lb-tab-icon">🚀</span>
+                    <span>太空射击</span>
+                </button>
+                <button class="lb-tab" data-game="8">
+                    <span class="lb-tab-icon">🐍</span>
+                    <span>贪吃蛇</span>
+                </button>
+                <button class="lb-tab" data-game="9">
+                    <span class="lb-tab-icon">🧱</span>
+                    <span>俄罗斯方块</span>
+                </button>
+                <button class="lb-tab" data-game="10">
+                    <span class="lb-tab-icon">🫧</span>
+                    <span>泡泡龙</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="lb-card">
+            <div class="lb-card-header">
+                <span>排名</span>
+                <span>玩家</span>
+                <span style="text-align:right">分数</span>
+                <span style="text-align:right">时间</span>
+            </div>
+            <div class="lb-body" id="lbBody"></div>
+        </div>
+    </div>
+
+    <script src="utils/storage.js"></script>
+    <script src="utils/api.js"></script>
+    <script src="leaderboard.js"></script>
+</body>
+</html>

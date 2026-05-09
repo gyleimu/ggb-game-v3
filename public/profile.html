@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - GGb Game</title>
+    <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-sidebar">
+            <div class="sidebar-avatar" id="sidebarAvatar">👤</div>
+            <h2 class="sidebar-username" id="sidebarUsername">-</h2>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-tab="info">📋 基本信息</a>
+                <a href="#" class="nav-item" data-tab="password">🔒 修改密码</a>
+                <a href="#" class="nav-item" data-tab="records">🎮 游戏记录</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/" class="btn btn-ghost">🏠 返回大厅</a>
+            </div>
+        </div>
+
+        <div class="profile-main">
+            <div id="tabInfo" class="tab-content active">
+                <h2 class="tab-title">📋 基本信息</h2>
+                <div class="info-grid" id="infoGrid">
+                    <p class="loading-text">加载中...</p>
+                </div>
+            </div>
+
+            <div id="tabPassword" class="tab-content">
+                <h2 class="tab-title">🔒 修改密码</h2>
+                <div class="password-form">
+                    <div class="form-group">
+                        <label for="oldPassword">当前密码</label>
+                        <input type="password" id="oldPassword" placeholder="输入当前密码">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">新密码</label>
+                        <input type="password" id="newPassword" placeholder="至少8位，含字母和数字">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">确认新密码</label>
+                        <input type="password" id="confirmPassword" placeholder="再次输入新密码">
+                    </div>
+                    <button id="btnChangePassword" class="btn btn-primary">更新密码</button>
+                    <p id="passwordMessage" class="form-message"></p>
+                </div>
+            </div>
+
+            <div id="tabRecords" class="tab-content">
+                <h2 class="tab-title">🎮 游戏记录</h2>
+                <div class="records-list" id="recordsList">
+                    <p class="loading-text">加载中...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="utils/storage.js"></script>
+    <script src="utils/api.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>

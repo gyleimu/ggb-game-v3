@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏后台管理系统</title>
+    <link rel="stylesheet" href="admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ==================== 登录界面 ==================== -->
+    <!-- 管理员登录, 调用 /api/admin/login -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <h1>游戏后台管理系统</h1>
+            <div class="login-form">
+                <h2>管理员登录</h2>
+                <input type="text" id="adminUsername" placeholder="管理员账号" required>
+                <input type="password" id="adminPassword" placeholder="密码" required>
+                <button onclick="adminLogin()">登录</button>
+                <p id="loginMessage" class="message"></p>
+            </div>
+            <div class="back-link">
+                <a href="/">返回游戏</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 管理后台主界面 ==================== -->
+    <!-- 左侧侧边栏 (sidebar) + 右侧内容区 (main-content) -->
+    <div id="adminDashboard" class="dashboard" style="display: none;">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="logo">
+                <h2>游戏后台</h2>
+                <p id="adminName"></p>
+            </div>
+            <!-- 导航菜单, data-page 对应右侧页面 ID -->
+            <nav>
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="icon">📈</span> 数据看板
+                </a>
+                <a href="#" class="nav-item" data-page="stats">
+                    <span class="icon">📊</span> 系统统计
+                </a>
+                <a href="#" class="nav-item" data-page="users">
+                    <span class="icon">👥</span> 用户管理
+                </a>
+                <a href="#" class="nav-item" data-page="leaderboard">
+                    <span class="icon">🏆</span> 排行榜
+                </a>
+                <a href="#" class="nav-item" data-page="records">
+                    <span class="icon">📋</span> 游戏记录
+                </a>
+                <a href="#" class="nav-item" data-page="oplogs">
+                    <span class="icon">📝</span> 操作日志
+                </a>
+                <a href="#" class="nav-item" data-page="config">
+                    <span class="icon">⚙️</span> 系统配置
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" onclick="logout()">退出登录</a>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 数据看板页面 — /api/admin/dashboard -->
+            <div id="dashboardPage" class="page active">
+                <div class="dash-top-bar">
+                    <h1>GGb Game 数据中心 <span>DASHBOARD</span></h1>
+                    <div class="dash-clock" id="dashClock"></div>
+                </div>
+                <div class="dash-summary">
+                    <div class="dash-neon-card cyan">
+                        <div class="dash-neon-icon">👤</div>
+                        <div class="dash-neon-label">今日新增用户</div>
+                        <div class="dash-neon-number" id="dashTodayUsers">0</div>
+                    </div>
+                    <div class="dash-neon-card purple">
+                        <div class="dash-neon-icon">🎮</div>
+                        <div class="dash-neon-label">今日总对局</div>
+                        <div class="dash-neon-number" id="dashTodayRecords">0</div>
+                    </div>
+                </div>
+                <div class="dash-chart-section">
+                    <h2>各游戏今日对局</h2>
+                    <div class="dash-chart-container" id="dashGameBarChart"></div>
+                </div>
+                <div class="dash-charts-grid">
+                    <div class="dash-chart-section">
+                        <h2>用户增长趋势（近7天）</h2>
+                        <div class="dash-chart-container" id="dashUserTrendChart"></div>
+                    </div>
+                    <div class="dash-chart-section">
+                        <h2>游戏对局趋势（近7天）</h2>
+                        <div class="dash-chart-container" id="dashRecordTrendChart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 系统统计页面 — /api/admin/stats -->
+            <div id="statsPage" class="page">
+                <h1>系统统计</h1>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>总用户数</h3>
+                        <p class="stat-number" id="totalUsers">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>总游戏次数</h3>
+                        <p class="stat-number" id="totalGames">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>总得分</h3>
+                        <p class="stat-number" id="totalScore">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>平均得分</h3>
+                        <p class="stat-number" id="avgScore">0</p>
+                    </div>
+                    <div class="stat-card highlight">
+                        <h3>最高得分</h3>
+                        <p class="stat-number" id="highestScore">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 用户管理页面 — /api/admin/users, /api/admin/user/:id (DELETE) -->
+            <div id="usersPage" class="page">
+                <h1>用户管理</h1>
+                <div class="toolbar">
+                    <input type="text" id="searchKeyword" placeholder="搜索用户名...">
+                    <button onclick="searchUsers()">搜索</button>
+                    <button onclick="loadUsers()" class="btn-secondary">刷新</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>用户名</th>
+                                <th>注册时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="5" class="loading">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="usersPagination"></div>
+            </div>
+
+            <!-- 排行榜页面 — /api/admin/leaderboard -->
+            <div id="leaderboardPage" class="page">
+                <h1>游戏排行榜</h1>
+                <div class="toolbar">
+                    <label>显示前</label>
+                    <select id="leaderboardLimit" onchange="loadLeaderboard()">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    <label>名</label>
+                    <button onclick="loadLeaderboard()" class="btn-secondary">刷新</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>排名</th>
+                                <th>用户名</th>
+                                <th>最高得分</th>
+                                <th>总得分</th>
+                                <th>游戏次数</th>
+                                <th>注册时间</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardTableBody">
+                            <tr>
+                                <td colspan="6" class="loading">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 游戏记录页面 — /api/admin/game-records -->
+            <div id="recordsPage" class="page">
+                <h1>游戏记录</h1>
+                <div class="toolbar">
+                    <button onclick="loadGameRecords()" class="btn-secondary">刷新</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>用户名</th>
+                                <th>得分</th>
+                                <th>等级</th>
+                                <th>游戏时间</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordsTableBody">
+                            <tr>
+                                <td colspan="5" class="loading">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 操作日志页面 — /api/admin/operation-logs -->
+            <div id="oplogsPage" class="page">
+                <h1>操作日志</h1>
+                <div class="toolbar">
+                    <input type="text" id="oplogKeyword" placeholder="搜索用户名...">
+                    <select id="oplogAction">
+                        <option value="">全部类型</option>
+                        <option value="register">注册</option>
+                        <option value="login">登录</option>
+                        <option value="play_game">游戏对局</option>
+                        <option value="change_password">修改密码</option>
+                        <option value="admin_reset_password">管理员重置密码</option>
+                    </select>
+                    <button class="btn-primary" onclick="searchOpLogs()">筛选</button>
+                    <button class="btn-secondary" onclick="loadOpLogs()">重置</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>用户名</th>
+                                <th>操作类型</th>
+                                <th>详情</th>
+                                <th>IP地址</th>
+                                <th>时间</th>
+                            </tr>
+                        </thead>
+                        <tbody id="oplogsTableBody">
+                            <tr>
+                                <td colspan="6" class="loading">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="oplogsPagination"></div>
+            </div>
+
+            <!-- 系统配置页面 — /api/admin/config (GET + PUT) -->
+            <div id="configPage" class="page">
+                <h1>系统配置</h1>
+                <div class="config-list" id="configList">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== JavaScript ==================== -->
+    <script>
+        let currentAdmin = null;
+
+        function getAuthHeaders() {
+            if (!currentAdmin || !currentAdmin.token) return {};
+            return { 'Authorization': 'Bearer ' + currentAdmin.token };
+        }
+
+        async function adminFetch(url, options) {
+            options = options || {};
+            options.headers = Object.assign(options.headers || {}, getAuthHeaders());
+            var res = await fetch(url, options);
+            if (res.status === 401) {
+                logout();
+                throw new Error('登录已过期');
+            }
+            return res;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedAdmin = localStorage.getItem('admin');
+            if (savedAdmin) {
+                currentAdmin = JSON.parse(savedAdmin);
+                showDashboard();
+            }
+
+            // 侧边栏导航: 点击切换页面 + 高亮当前项
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.dataset.page;
+                    switchPage(page);
+                });
+            });
+        });
+
+        /**
+         * 管理员登录 — POST /api/admin/login
+         * 成功后保存到 localStorage, 切换到后台主界面
+         */
+        async function adminLogin() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+
+            if (!username || !password) {
+                showMessage('请输入管理员账号和密码', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentAdmin = { id: data.userId, username: data.username, token: data.token };
+                    localStorage.setItem('admin', JSON.stringify(currentAdmin));
+                    showDashboard();
+                } else {
+                    showMessage(data.message, 'error');
+                }
+            } catch (error) {
+                showMessage('网络错误，请稍后重试', 'error');
+            }
+        }
+
+        /** 显示登录页面的提示消息 (成功/错误) */
+        function showMessage(message, type) {
+            const element = document.getElementById('loginMessage');
+            element.innerHTML = message;
+            element.className = `message ${type}`;
+        }
+
+        /** 隐藏登录界面, 显示后台主界面, 自动加载统计数据 */
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'flex';
+            document.getElementById('adminName').innerHTML = `欢迎, ${currentAdmin.username}`;
+
+            loadDashboard();
+        }
+
+        /** 退出登录 — 清除缓存 + 返回登录页 + 清空输入框 */
+        function logout() {
+            currentAdmin = null;
+            localStorage.removeItem('admin');
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('adminUsername').value = '';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        /**
+         * 切换右侧页面
+         * @param {string} pageName — stats/users/leaderboard/records/config
+         */
+        function switchPage(pageName) {
+            // 更新侧边栏高亮
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.page === pageName) {
+                    item.classList.add('active');
+                }
+            });
+
+            // 显示对应页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(`${pageName}Page`).classList.add('active');
+
+            // 自动加载数据
+            switch(pageName) {
+                case 'dashboard':
+                    loadDashboard();
+                    break;
+                case 'stats':
+                    loadStats();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'leaderboard':
+                    loadLeaderboard();
+                    break;
+                case 'records':
+                    loadGameRecords();
+                    break;
+                case 'oplogs':
+                    loadOpLogs();
+                    break;
+                case 'config':
+                    loadConfig();
+                    break;
+            }
+        }
+
+        /**
+         * 加载系统统计数据 — GET /api/admin/stats
+         * 填充: 总用户数/总游戏次数/总得分/平均得分/最高分
+         */
+        async function loadStats() {
+            try {
+                const response = await adminFetch('/api/admin/stats');
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('totalUsers').innerText = data.stats.total_users;
+                    document.getElementById('totalGames').innerText = data.stats.total_games;
+                    document.getElementById('totalScore').innerText = data.stats.total_score;
+                    document.getElementById('avgScore').innerText = data.stats.avg_score;
+                    document.getElementById('highestScore').innerText = data.stats.highest_score;
+                }
+            } catch (error) {
+                console.error('加载统计失败:', error);
+            }
+        }
+
+        /**
+         * 加载用户列表 — GET /api/admin/users
+         * 渲染到 usersTableBody
+         */
+        var usersCurrentPage = 1;
+        var usersCurrentKeyword = '';
+
+        async function loadUsers(page) {
+            usersCurrentPage = page || 1;
+            usersCurrentKeyword = '';
+            document.getElementById('searchKeyword').value = '';
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '<tr><td colspan="5" class="loading">加载中...</td></tr>';
+
+            try {
+                const response = await adminFetch(`/api/admin/users?page=${usersCurrentPage}&limit=20`);
+                const data = await response.json();
+
+                if (data.success && data.users.length > 0) {
+                    tbody.innerHTML = data.users.map(user => `
+                        <tr>
+                            <td>${user.id}</td>
+                            <td>${user.username}</td>
+                            <td>${formatDate(user.created_at)}</td>
+                            <td>${user.is_banned ? '<span class="badge-banned">已封禁</span>' : '<span class="badge-normal">正常</span>'}</td>
+                            <td>
+                                ${user.is_banned
+                                    ? '<button class="btn-success" onclick="unbanUser(' + user.id + ')">解封</button>'
+                                    : '<button class="btn-warning" onclick="banUser(' + user.id + ')">封禁</button>'}
+                                <button class="btn-info" onclick="resetPassword(${user.id}, '${user.username}')">重置密码</button>
+                                <button class="btn-danger" onclick="deleteUser(${user.id})">删除</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                    renderPagination('usersPagination', data.total, data.page, data.limit, usersCurrentKeyword ? 'search' : 'list');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty">暂无用户</td></tr>';
+                    document.getElementById('usersPagination').innerHTML = '';
+                }
+            } catch (error) {
+                tbody.innerHTML = '<tr><td colspan="5" class="error">加载失败</td></tr>';
+            }
+        }
+
+        async function searchUsers(page) {
+            const keyword = document.getElementById('searchKeyword').value.trim();
+            if (!keyword) { loadUsers(); return; }
+            usersCurrentKeyword = keyword;
+            usersCurrentPage = page || 1;
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '<tr><td colspan="5" class="loading">搜索中...</td></tr>';
+
+            try {
+                const response = await adminFetch(`/api/admin/users/search?keyword=${encodeURIComponent(keyword)}&page=${usersCurrentPage}&limit=20`);
+                const data = await response.json();
+
+                if (data.success && data.users.length > 0) {
+                    tbody.innerHTML = data.users.map(user => `
+                        <tr>
+                            <td>${user.id}</td>
+                            <td>${user.username}</td>
+                            <td>${formatDate(user.created_at)}</td>
+                            <td>${user.is_banned ? '<span class="badge-banned">已封禁</span>' : '<span class="badge-normal">正常</span>'}</td>
+                            <td>
+                                ${user.is_banned
+                                    ? '<button class="btn-success" onclick="unbanUser(' + user.id + ')">解封</button>'
+                                    : '<button class="btn-warning" onclick="banUser(' + user.id + ')">封禁</button>'}
+                                <button class="btn-info" onclick="resetPassword(${user.id}, '${user.username}')">重置密码</button>
+                                <button class="btn-danger" onclick="deleteUser(${user.id})">删除</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                    renderPagination('usersPagination', data.total, data.page, data.limit, 'search');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty">未找到匹配的用户</td></tr>';
+                    document.getElementById('usersPagination').innerHTML = '';
+                }
+            } catch (error) {
+                tbody.innerHTML = '<tr><td colspan="5" class="error">搜索失败</td></tr>';
+            }
+        }
+
+        async function banUser(userId) {
+            try {
+                const res = await adminFetch(`/api/admin/user/${userId}/ban`, { method: 'PUT' });
+                const data = await res.json();
+                if (data.success) loadUsers(usersCurrentPage);
+            } catch (e) {}
+        }
+
+        async function unbanUser(userId) {
+            try {
+                const res = await adminFetch(`/api/admin/user/${userId}/unban`, { method: 'PUT' });
+                const data = await res.json();
+                if (data.success) loadUsers(usersCurrentPage);
+            } catch (e) {}
+        }
+
+        async function resetPassword(userId, username) {
+            var newPwd = prompt('为用户 "' + username + '" 设置新密码（至少8位，含字母和数字）：');
+            if (!newPwd) return;
+            try {
+                const res = await adminFetch(`/api/admin/user/${userId}/reset-password`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newPassword: newPwd })
+                });
+                const data = await res.json();
+                if (data.success) alert('密码已重置');
+                else alert('重置失败: ' + data.message);
+            } catch (e) { alert('重置失败'); }
+        }
+
+        function renderPagination(containerId, total, currentPage, limit, type) {
+            var container = document.getElementById(containerId);
+            if (!container) return;
+            var totalPages = Math.ceil(total / limit);
+            if (totalPages <= 1) { container.innerHTML = ''; return; }
+            var fnMap = { search: 'searchUsers', list: 'loadUsers', oplogs_list: 'oplogsLoad', oplogs_search: 'oplogsSearch' };
+            var fn = fnMap[type] || 'loadUsers';
+            var html = '<button ' + (currentPage <= 1 ? 'disabled' : '') + ' onclick="' + fn + '(' + (currentPage - 1) + ')">上一页</button>';
+            var start = Math.max(1, currentPage - 2);
+            var end = Math.min(totalPages, currentPage + 2);
+            for (var i = start; i <= end; i++) {
+                html += '<button class="' + (i === currentPage ? 'active' : '') + '" onclick="' + fn + '(' + i + ')">' + i + '</button>';
+            }
+            html += '<span class="page-info">' + total + ' 条记录</span>';
+            html += '<button ' + (currentPage >= totalPages ? 'disabled' : '') + ' onclick="' + fn + '(' + (currentPage + 1) + ')">下一页</button>';
+            container.innerHTML = html;
+        }
+
+        /**
+         * 删除用户 — DELETE /api/admin/user/:id
+         * 确认后删除, 并刷新用户列表和统计数据
+         */
+        async function deleteUser(userId) {
+            if (!confirm('确定要删除这个用户吗？此操作不可撤销！')) {
+                return;
+            }
+
+            try {
+                const response = await adminFetch(`/api/admin/user/${userId}`, { method: 'DELETE' });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('用户已删除');
+                    loadUsers(usersCurrentPage);
+                    loadStats();
+                } else {
+                    alert('删除失败: ' + data.message);
+                }
+            } catch (error) {
+                alert('删除失败，请稍后重试');
+            }
+        }
+
+        /**
+         * 加载排行榜 — GET /api/admin/leaderboard
+         * 按最高分倒序, 前3名显示奖牌 Emoji
+         */
+        async function loadLeaderboard() {
+            const limit = document.getElementById('leaderboardLimit').value;
+            const tbody = document.getElementById('leaderboardTableBody');
+            tbody.innerHTML = '<tr><td colspan="6" class="loading">加载中...</td></tr>';
+
+            try {
+                const response = await adminFetch(`/api/admin/leaderboard?limit=${limit}`);
+                const data = await response.json();
+
+                if (data.success && data.leaderboard.length > 0) {
+                    tbody.innerHTML = data.leaderboard.map((user, index) => `
+                        <tr>
+                            <td class="rank">${getRankBadge(index + 1)}</td>
+                            <td>${user.username}</td>
+                            <td class="highlight">${user.max_score}</td>
+                            <td>${user.total_score}</td>
+                            <td>${user.games_played}</td>
+                            <td>${formatDate(user.created_at)}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty">暂无排行榜数据</td></tr>';
+                }
+            } catch (error) {
+                tbody.innerHTML = '<tr><td colspan="6" class="error">加载失败</td></tr>';
+            }
+        }
+
+        /**
+         * 加载游戏记录 — GET /api/admin/game-records
+         * 最近100条记录
+         */
+        async function loadGameRecords() {
+            const tbody = document.getElementById('recordsTableBody');
+            tbody.innerHTML = '<tr><td colspan="5" class="loading">加载中...</td></tr>';
+
+            try {
+                const response = await adminFetch('/api/admin/game-records?limit=100');
+                const data = await response.json();
+
+                if (data.success && data.records.length > 0) {
+                    tbody.innerHTML = data.records.map(record => `
+                        <tr>
+                            <td>${record.id}</td>
+                            <td>${record.username}</td>
+                            <td class="highlight">${record.score}</td>
+                            <td>${record.level}</td>
+                            <td>${formatDate(record.played_at)}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" class="empty">暂无游戏记录</td></tr>';
+                }
+            } catch (error) {
+                tbody.innerHTML = '<tr><td colspan="5" class="error">加载失败</td></tr>';
+            }
+        }
+
+        var ACTION_NAMES = { register: '注册', login: '登录', play_game: '游戏对局', change_password: '修改密码', admin_reset_password: '管理员重置密码' };
+        var oplogsCurrentPage = 1;
+        var oplogsCurrentKeyword = '';
+        var oplogsCurrentAction = '';
+
+        async function loadOpLogs(page) {
+            oplogsCurrentPage = page || 1;
+            oplogsCurrentKeyword = '';
+            oplogsCurrentAction = '';
+            document.getElementById('oplogKeyword').value = '';
+            document.getElementById('oplogAction').value = '';
+            var tbody = document.getElementById('oplogsTableBody');
+            tbody.innerHTML = '<tr><td colspan="6" class="loading">加载中...</td></tr>';
+            try {
+                var response = await adminFetch('/api/admin/operation-logs?page=' + oplogsCurrentPage + '&limit=20');
+                var data = await response.json();
+                if (data.success && data.logs.length > 0) {
+                    tbody.innerHTML = data.logs.map(function(log) {
+                        return '<tr><td>' + log.id + '</td><td>' + log.username + '</td><td>' +
+                            (ACTION_NAMES[log.action] || log.action) + '</td><td>' +
+                            (log.detail || '-') + '</td><td>' + (log.ip_address || '-') + '</td><td>' +
+                            formatDate(log.created_at) + '</td></tr>';
+                    }).join('');
+                    renderPagination('oplogsPagination', data.total, data.page, data.limit, oplogsCurrentKeyword || oplogsCurrentAction ? 'oplogs_search' : 'oplogs_list');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty">暂无操作日志</td></tr>';
+                    document.getElementById('oplogsPagination').innerHTML = '';
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="6" class="error">加载失败</td></tr>';
+            }
+        }
+
+        async function searchOpLogs(page) {
+            var keyword = document.getElementById('oplogKeyword').value.trim();
+            var action = document.getElementById('oplogAction').value;
+            oplogsCurrentKeyword = keyword;
+            oplogsCurrentAction = action;
+            oplogsCurrentPage = page || 1;
+            var tbody = document.getElementById('oplogsTableBody');
+            tbody.innerHTML = '<tr><td colspan="6" class="loading">筛选中...</td></tr>';
+            var url = '/api/admin/operation-logs?page=' + oplogsCurrentPage + '&limit=20';
+            if (keyword) url += '&keyword=' + encodeURIComponent(keyword);
+            if (action) url += '&action=' + encodeURIComponent(action);
+            try {
+                var response = await adminFetch(url);
+                var data = await response.json();
+                if (data.success && data.logs.length > 0) {
+                    tbody.innerHTML = data.logs.map(function(log) {
+                        return '<tr><td>' + log.id + '</td><td>' + log.username + '</td><td>' +
+                            (ACTION_NAMES[log.action] || log.action) + '</td><td>' +
+                            (log.detail || '-') + '</td><td>' + (log.ip_address || '-') + '</td><td>' +
+                            formatDate(log.created_at) + '</td></tr>';
+                    }).join('');
+                    renderPagination('oplogsPagination', data.total, data.page, data.limit, 'oplogs_search');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty">未找到匹配的日志</td></tr>';
+                    document.getElementById('oplogsPagination').innerHTML = '';
+                }
+            } catch (e) {
+                tbody.innerHTML = '<tr><td colspan="6" class="error">筛选失败</td></tr>';
+            }
+        }
+
+        function oplogsLoad(page) { loadOpLogs(page); }
+        function oplogsSearch(page) { searchOpLogs(page); }
+
+        /**
+         * 加载系统配置 — GET /api/admin/config
+         * 每个配置项渲染为: 描述文字 + 输入框 + 保存按钮
+         */
+        async function loadConfig() {
+            const container = document.getElementById('configList');
+            container.innerHTML = '<div class="loading">加载中...</div>';
+
+            try {
+                const response = await adminFetch('/api/admin/config');
+                const data = await response.json();
+
+                if (data.success && data.config.length > 0) {
+                    container.innerHTML = data.config.map(item => `
+                        <div class="config-item">
+                            <div class="config-info">
+                                <h3>${item.description}</h3>
+                                <p>键: <code>${item.key}</code></p>
+                            </div>
+                            <div class="config-value">
+                                <input type="text" id="config_${item.key}" value="${item.value}">
+                                <button onclick="updateConfig('${item.key}')">保存</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    container.innerHTML = '<div class="empty">暂无配置项</div>';
+                }
+            } catch (error) {
+                container.innerHTML = '<div class="error">加载失败</div>';
+            }
+        }
+
+        /**
+         * 更新单个配置 — PUT /api/admin/config
+         * @param {string} key — 配置键 (如 fish_spawn_rate)
+         */
+        async function updateConfig(key) {
+            const value = document.getElementById(`config_${key}`).value;
+
+            try {
+                const response = await adminFetch('/api/admin/config', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ key, value })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('配置已更新');
+                } else {
+                    alert('更新失败: ' + data.message);
+                }
+            } catch (error) {
+                alert('更新失败，请稍后重试');
+            }
+        }
+
+        /**
+         * 格式化日期为中文格式
+         * @param {string} dateString — ISO 日期字符串
+         * @returns {string} 如 "2026/4/28 16:30:00"
+         */
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('zh-CN');
+        }
+
+        /**
+         * 排行榜名次徽章
+         * @param {number} rank — 名次(1-based)
+         * @returns {string} 前3名返回 Emoji, 其余返回 #N
+         */
+        function getRankBadge(rank) {
+            const badges = {
+                1: '🥇',
+                2: '🥈',
+                3: '🥉'
+            };
+            return badges[rank] || `#${rank}`;
+        }
+
+        var gameBarChart = null, userTrendChart = null, recordTrendChart = null;
+
+        function animateNumber(el, target) {
+            var start = parseInt(el.innerText) || 0;
+            var diff = target - start;
+            if (diff === 0) return;
+            var duration = 800;
+            var startTime = null;
+            function step(ts) {
+                if (!startTime) startTime = ts;
+                var progress = Math.min((ts - startTime) / duration, 1);
+                var ease = 1 - Math.pow(1 - progress, 3);
+                el.innerText = Math.round(start + diff * ease);
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        function startClock() {
+            function tick() {
+                var now = new Date();
+                var y = now.getFullYear();
+                var m = String(now.getMonth() + 1).padStart(2, '0');
+                var d = String(now.getDate()).padStart(2, '0');
+                var hh = String(now.getHours()).padStart(2, '0');
+                var mm = String(now.getMinutes()).padStart(2, '0');
+                var ss = String(now.getSeconds()).padStart(2, '0');
+                var el = document.getElementById('dashClock');
+                if (el) el.innerText = y + '-' + m + '-' + d + '  ' + hh + ':' + mm + ':' + ss;
+            }
+            tick();
+            setInterval(tick, 1000);
+        }
+
+        function get7Days() {
+            var dates = [];
+            var today = new Date();
+            for (var i = 6; i >= 0; i--) {
+                var d = new Date(today);
+                d.setDate(d.getDate() - i);
+                dates.push(d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'));
+            }
+            return dates;
+        }
+
+        function buildTrendData(apiData) {
+            var map = {};
+            if (apiData) apiData.forEach(function(t) {
+                var key = String(t.date);
+                if (key.length > 10) key = key.substring(0, 10);
+                map[key] = t.count;
+            });
+            var dates = get7Days();
+            return {
+                dates: dates,
+                values: dates.map(function(d) { return map[d] || 0; })
+            };
+        }
+
+        function initTrendChart(domId, data, color, glowColor) {
+            var dom = document.getElementById(domId);
+            if (!dom) return null;
+            var chart = echarts.init(dom);
+            chart.setOption({
+                backgroundColor: 'transparent',
+                grid: { top: 30, right: 20, bottom: 30, left: 50 },
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(10,10,30,0.9)',
+                    borderColor: glowColor,
+                    borderWidth: 1,
+                    textStyle: { color: '#fff', fontSize: 13 },
+                    axisPointer: { lineStyle: { color: glowColor, opacity: 0.3 } }
+                },
+                xAxis: {
+                    type: 'category',
+                    data: data.dates,
+                    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } },
+                    axisLabel: {
+                        color: 'rgba(255,255,255,0.4)',
+                        formatter: function(v) { return v.substring(5); }
+                    },
+                    axisTick: { show: false }
+                },
+                yAxis: {
+                    type: 'value',
+                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)' } },
+                    axisLabel: { color: 'rgba(255,255,255,0.3)' },
+                    axisLine: { show: false }
+                },
+                series: [{
+                    type: 'line',
+                    data: data.values,
+                    smooth: true,
+                    symbol: 'circle',
+                    symbolSize: 8,
+                    lineStyle: { color: color, width: 3, shadowColor: glowColor, shadowBlur: 12 },
+                    itemStyle: { color: color, borderColor: '#0a0a1a', borderWidth: 2, shadowColor: glowColor, shadowBlur: 8 },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: glowColor.replace(')', ',0.25)').replace('rgb', 'rgba') },
+                            { offset: 1, color: 'rgba(0,0,0,0)' }
+                        ])
+                    },
+                    animationDuration: 1200,
+                    animationEasing: 'cubicOut'
+                }]
+            });
+            return chart;
+        }
+
+        function initGameBarChart(domId, games) {
+            var dom = document.getElementById(domId);
+            if (!dom) return null;
+            var chart = echarts.init(dom);
+            var colors = [
+                ['#00f0ff', 'rgba(0,240,255,0.35)'],
+                ['#a855f7', 'rgba(168,85,247,0.35)'],
+                ['#f97316', 'rgba(249,115,22,0.35)'],
+                ['#22c55e', 'rgba(34,197,94,0.35)'],
+                ['#ec4899', 'rgba(236,72,153,0.35)']
+            ];
+            var names = games.map(function(g) { return g.name; });
+            var values = games.map(function(g) { return g.count; });
+
+            chart.setOption({
+                backgroundColor: 'transparent',
+                grid: { top: 10, right: 40, bottom: 10, left: 110 },
+                tooltip: {
+                    backgroundColor: 'rgba(10,10,30,0.9)',
+                    borderColor: '#00f0ff',
+                    borderWidth: 1,
+                    textStyle: { color: '#fff' }
+                },
+                xAxis: {
+                    type: 'value',
+                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.04)' } },
+                    axisLabel: { color: 'rgba(255,255,255,0.3)' },
+                    axisLine: { show: false }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: names,
+                    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } },
+                    axisLabel: { color: 'rgba(255,255,255,0.6)', fontSize: 13 },
+                    axisTick: { show: false },
+                    inverse: true
+                },
+                series: [{
+                    type: 'bar',
+                    data: values.map(function(v, i) {
+                        var c = colors[i % colors.length];
+                        return {
+                            value: v,
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                                    { offset: 0, color: 'rgba(0,0,0,0)' },
+                                    { offset: 1, color: c[0] }
+                                ]),
+                                borderRadius: [0, 6, 6, 0],
+                                shadowColor: c[1],
+                                shadowBlur: 10
+                            }
+                        };
+                    }),
+                    barWidth: 24,
+                    label: {
+                        show: true,
+                        position: 'right',
+                        color: 'rgba(255,255,255,0.6)',
+                        fontSize: 13,
+                        fontFamily: 'Orbitron, monospace'
+                    },
+                    animationDuration: 1000,
+                    animationEasing: 'cubicOut'
+                }]
+            });
+            return chart;
+        }
+
+        function handleChartResize() {
+            if (gameBarChart) gameBarChart.resize();
+            if (userTrendChart) userTrendChart.resize();
+            if (recordTrendChart) recordTrendChart.resize();
+        }
+        window.addEventListener('resize', handleChartResize);
+
+        async function loadDashboard() {
+            startClock();
+            try {
+                var response = await adminFetch('/api/admin/dashboard');
+                var data = await response.json();
+                if (!data.success) return;
+                var d = data.dashboard;
+
+                animateNumber(document.getElementById('dashTodayUsers'), d.todayUsers);
+
+                var totalTodayRecords = 0;
+                d.gamesByGameToday.forEach(function(g) { totalTodayRecords += g.count; });
+                animateNumber(document.getElementById('dashTodayRecords'), totalTodayRecords);
+
+                if (gameBarChart) { gameBarChart.dispose(); gameBarChart = null; }
+                if (userTrendChart) { userTrendChart.dispose(); userTrendChart = null; }
+                if (recordTrendChart) { recordTrendChart.dispose(); recordTrendChart = null; }
+
+                gameBarChart = initGameBarChart('dashGameBarChart', d.gamesByGameToday);
+
+                var userData = buildTrendData(d.userTrend);
+                userTrendChart = initTrendChart('dashUserTrendChart', userData, '#00f0ff', 'rgb(0,240,255)');
+
+                var recordData = buildTrendData(d.recordTrend);
+                recordTrendChart = initTrendChart('dashRecordTrendChart', recordData, '#a855f7', 'rgb(168,85,247)');
+            } catch (error) {
+                console.error('加载看板失败:', error);
+            }
+        }
+    </script>
+</body>
+</html>

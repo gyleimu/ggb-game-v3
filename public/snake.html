@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇 - GGb Game</title>
+    <link rel="stylesheet" href="snake.css">
+</head>
+<body>
+    <!-- 启动动画 -->
+    <div id="splashScreen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <div class="splash-snake">
+                    <img src="cover-snake.png" alt="贪吃蛇">
+                </div>
+                <div class="splash-ripple"></div>
+            </div>
+            <h1 class="splash-title">
+                <span class="splash-title-char" style="animation-delay:0s">贪</span>
+                <span class="splash-title-char" style="animation-delay:0.12s">吃</span>
+                <span class="splash-title-char" style="animation-delay:0.24s">蛇</span>
+                <span class="splash-title-char" style="animation-delay:0.36s">大</span>
+                <span class="splash-title-char" style="animation-delay:0.48s">作</span>
+                <span class="splash-title-char" style="animation-delay:0.60s">战</span>
+            </h1>
+            <div class="splash-loader">
+                <div class="splash-loader-bar"></div>
+            </div>
+            <p class="splash-subtitle">加载中...</p>
+        </div>
+    </div>
+
+    <div id="gameContainer" class="snake-container" style="display: none;">
+        <header class="snake-header">
+            <h1 class="snake-title">🐍 贪吃蛇大作战</h1>
+            <div class="snake-stats">
+                <div class="stat-item">
+                    <span class="stat-label">分数</span>
+                    <span class="stat-value" id="scoreDisplay">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">等级</span>
+                    <span class="stat-value" id="levelDisplay">1</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">最高分</span>
+                    <span class="stat-value" id="highScoreDisplay">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+
+        <div class="snake-controls-hint">
+            <span>↑↓←→ 或 WASD 控制方向</span>
+            <span class="divider">|</span>
+            <span>空格键 暂停/继续</span>
+        </div>
+
+        <div class="snake-footer">
+            <button id="btnBack" class="btn btn-ghost">🏠 返回大厅</button>
+        </div>
+    </div>
+
+    <div id="gameOverOverlay" class="overlay" style="display: none;">
+        <div class="overlay-card">
+            <h2 class="overlay-title">游戏结束</h2>
+            <div class="overlay-score">
+                <span class="overlay-score-label">最终得分</span>
+                <span class="overlay-score-value" id="finalScoreDisplay">0</span>
+            </div>
+            <div class="overlay-badge" id="overlayBadge" style="display: none;">🏆 新纪录！</div>
+            <div class="overlay-buttons">
+                <button id="btnRestart" class="btn btn-primary">再来一局</button>
+                <button id="btnBackOverlay" class="btn btn-ghost">返回大厅</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="utils/storage.js"></script>
+    <script src="utils/api.js"></script>
+    <script src="snake.js"></script>
+</body>
+</html>

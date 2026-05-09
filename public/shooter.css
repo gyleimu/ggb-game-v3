@@ -1,0 +1,263 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Comic+Neue:wght@400;700&display=swap');
+
+:root {
+    --bg-primary: #0a0e17;
+    --bg-secondary: #111827;
+    --bg-card: #1a1f2e;
+    --accent: #4CAF50;
+    --accent-hover: #45a049;
+    --text-primary: #e5e7eb;
+    --text-secondary: #9ca3af;
+    --border: rgba(255, 255, 255, 0.06);
+    --glow: rgba(76, 175, 80, 0.4);
+    --danger: #ef4444;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 50%, rgba(76, 175, 80, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(100, 149, 237, 0.04) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+}
+
+/* ========== 启动动画 ========== */
+.splash-screen {
+    position: fixed; inset: 0;
+    background: linear-gradient(135deg, #0a1628 0%, #0d1b33 40%, #0a1628 100%);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 9999;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.splash-screen.fade-out { opacity: 0; transform: scale(1.05); pointer-events: none; }
+
+.splash-content { text-align: center; }
+
+.splash-logo { position: relative; width: 140px; height: 140px; margin: 0 auto 30px; }
+
+.splash-ship {
+    width: 120px; height: 120px; border-radius: 50%;
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem;
+    animation: splashShipFloat 2s ease-in-out infinite;
+    box-shadow: 0 0 40px rgba(100, 149, 237, 0.6);
+    background: rgba(100, 149, 237, 0.08);
+}
+
+.splash-ripple {
+    position: absolute; top: 0; left: 0;
+    width: 140px; height: 140px; border-radius: 50%;
+    border: 3px solid rgba(100, 149, 237, 0.4);
+    animation: splashRipple 1.8s ease-out infinite;
+}
+
+.splash-ripple::after {
+    content: '';
+    position: absolute; top: -8px; left: -8px;
+    width: 156px; height: 156px; border-radius: 50%;
+    border: 2px solid rgba(100, 149, 237, 0.2);
+    animation: splashRipple 1.8s ease-out 0.6s infinite;
+}
+
+@keyframes splashShipFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+@keyframes splashRipple {
+    0% { transform: scale(0.9); opacity: 1; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+
+.splash-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 42px; font-weight: 900; color: #fff;
+    margin-bottom: 30px; letter-spacing: 4px;
+}
+
+.splash-title-char {
+    display: inline-block;
+    animation: splashCharBounce 0.6s ease-out forwards;
+    opacity: 0; transform: translateY(40px);
+    text-shadow: 0 0 30px rgba(100, 149, 237, 0.5);
+}
+
+@keyframes splashCharBounce {
+    0% { opacity: 0; transform: translateY(40px); }
+    60% { opacity: 1; transform: translateY(-5px); }
+    80% { transform: translateY(2px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.splash-loader {
+    width: 220px; height: 4px;
+    background: rgba(255, 255, 255, 0.1); border-radius: 2px;
+    margin: 0 auto 20px; overflow: hidden;
+}
+
+.splash-loader-bar {
+    width: 30%; height: 100%;
+    background: linear-gradient(90deg, #6495ED, #87CEEB, #6495ED);
+    border-radius: 2px;
+    animation: splashLoading 1.4s ease-in-out infinite;
+}
+
+@keyframes splashLoading {
+    0% { width: 0; margin-left: 0; }
+    50% { width: 70%; margin-left: 15%; }
+    100% { width: 0; margin-left: 100%; }
+}
+
+.splash-subtitle {
+    color: rgba(255, 255, 255, 0.5); font-size: 14px;
+    font-family: 'Comic Neue', cursive; letter-spacing: 2px;
+    animation: splashPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes splashPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.9; }
+}
+
+/* ========== 游戏容器 ========== */
+.shooter-container {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+    padding: 16px;
+}
+
+canvas {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 0 40px rgba(100, 149, 237, 0.08), inset 0 0 60px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.shooter-hud {
+    position: absolute;
+    top: 28px; right: 28px;
+    display: flex; gap: 16px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: #fff;
+    z-index: 2;
+    pointer-events: none;
+    text-shadow: 0 0 10px rgba(100, 149, 237, 0.6);
+}
+
+.shooter-controls-hint {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 0.8rem; color: var(--text-secondary);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 20px;
+    backdrop-filter: blur(10px);
+}
+
+.shooter-controls-hint .divider { color: rgba(255, 255, 255, 0.1); }
+
+/* ========== 按钮 ========== */
+.btn {
+    border: none; border-radius: 10px; padding: 10px 24px;
+    font-size: 0.9rem; font-weight: 600; cursor: pointer;
+    transition: all 0.2s ease; font-family: inherit;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    color: #fff; box-shadow: 0 4px 16px var(--glow);
+}
+
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px var(--glow); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-ghost {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary); border: 1px solid var(--border);
+}
+
+.btn-ghost:hover { background: rgba(255, 255, 255, 0.08); color: var(--text-primary); }
+
+/* ========== 弹窗 ========== */
+.overlay {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    animation: fadeIn 0.25s ease;
+}
+
+.overlay-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 40px 48px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: scaleIn 0.3s ease;
+    max-width: 380px; width: 90%;
+}
+
+.overlay-title {
+    font-size: 1.8rem; font-weight: 700;
+    color: var(--danger); margin-bottom: 20px;
+}
+
+.overlay-score {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 4px; margin-bottom: 16px;
+}
+
+.overlay-score-label {
+    font-size: 0.8rem; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.08em;
+}
+
+.overlay-score-value {
+    font-size: 3rem; font-weight: 800; color: var(--accent);
+    font-variant-numeric: tabular-nums;
+}
+
+.overlay-badge {
+    display: inline-block; font-size: 1rem; font-weight: 600;
+    color: #FFD700;
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 20px; padding: 6px 16px; margin-bottom: 20px;
+    animation: pulse 1.5s ease infinite;
+}
+
+.overlay-buttons { display: flex; flex-direction: column; gap: 10px; }
+.overlay-buttons .btn { width: 100%; }
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
+    50% { box-shadow: 0 0 0 12px rgba(255, 215, 0, 0); }
+}
